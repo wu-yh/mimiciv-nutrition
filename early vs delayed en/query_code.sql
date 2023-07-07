@@ -1274,6 +1274,8 @@ AS (
 	,bmi_admit
 AS (
 	SELECT d.stay_id
+	  ,MAX(weight.weight) wt_admit
+		,MAX(height.height) ht_admit
 		,MAX(10000 * weight.weight / (height.height * height.height)) bmi_admit
 	FROM d
 	LEFT JOIN height ON d.stay_id = height.stay_id
@@ -1337,6 +1339,8 @@ SELECT d.stay_id
 	,age.age
 	,d.gender
 	,d.race
+	,bmi_admit.wt_admit
+	,bmi_admit.ht_admit
 	,bmi_admit.bmi_admit
 	,bmi_disch.bmi_disch
 	,charlson.charlson_comorbidity_index
