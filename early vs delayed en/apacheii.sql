@@ -1,6 +1,7 @@
 CREATE MATERIALIZED VIEW PUBLIC.apacheii AS
 	-- references: 
-	-- KNAUS, W. A., DRAPER, E. A., WAGNER, D. P., & ZIMMERMAN, J. E. (1985). APACHE II: A severity of disease classification system. Critical Care Medicine, 13(10), 818-29.
+	-- KNAUS, W. A., DRAPER, E. A., WAGNER, D. P., & ZIMMERMAN, J. E. (1985). 
+	-- APACHE II: A severity of disease classification system. Critical Care Medicine, 13(10), 818-29.
 	-- https://github.com/MIT-LCP/mimic-code/blob/main/mimic-iv/concepts_postgres/score/sapsii.sql
 	-- https://github.com/MIT-LCP/mimic-code/blob/main/mimic-iv/concepts_postgres/score/apsiii.sql
 	WITH co AS (
@@ -379,7 +380,14 @@ CREATE MATERIALIZED VIEW PUBLIC.apacheii AS
 						THEN 'UnscheduledSurgical'
 					ELSE 'Medical'
 					END AS admissiontype
-				,GREATEST(com.cirrhosis, com.por_ht, com.hf, com.respiratory, com.cd, com.immune, com.aids, com.hem) AS chronic_disease
+				,GREATEST(
+				com.cirrhosis, 
+				com.por_ht, 
+				com.hf, 
+				com.respiratory, 
+				com.cd, 
+				com.immune, 
+				com.aids, com.hem) AS chronic_disease
 				,com.arf
 			FROM mimiciv_icu.icustays ie
 			INNER JOIN mimiciv_hosp.admissions adm ON ie.hadm_id = adm.hadm_id
@@ -1007,5 +1015,19 @@ CREATE MATERIALIZED VIEW PUBLIC.apacheii AS
 -- tabulate the APACHE II using the scores from the worst values
 SELECT s.*
 	-- coalesce statements impute normal score of zero if data element is missing
-	,COALESCE(hr_score, 0) + COALESCE(mbp_score, 0) + COALESCE(temp_score, 0) + COALESCE(resp_rate_score, 0) + COALESCE(oxygenation_score, 0) + COALESCE(hct_score, 0) + COALESCE(wbc_score, 0) + COALESCE(cr_score, 0) + COALESCE(sodium_score, 0) + COALESCE(potassium_score, 0) + COALESCE(ph_score, 0) + COALESCE(age_score, 0) + COALESCE(chronic_health_score, 0) + COALESCE(gcs_score, 0) AS apacheii
+	,COALESCE(hr_score, 0) 
+	+ COALESCE(mbp_score, 0) 
+	+ COALESCE(temp_score, 0) 
+	+ COALESCE(resp_rate_score, 0) 
+	+ COALESCE(oxygenation_score, 0) 
+	+ COALESCE(hct_score, 0) 
+	+ COALESCE(wbc_score, 0) 
+	+ COALESCE(cr_score, 0) 
+	+ COALESCE(sodium_score, 0) 
+	+ COALESCE(potassium_score, 0) 
+	+ COALESCE(ph_score, 0) 
+	+ COALESCE(age_score, 0) 
+	+ COALESCE(chronic_health_score, 0) 
+	+ COALESCE(gcs_score, 0) 
+	AS apacheii
 FROM scorecomp s

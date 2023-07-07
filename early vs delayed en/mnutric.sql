@@ -1,5 +1,8 @@
 CREATE MATERIALIZED VIEW PUBLIC.mnutric AS
-	-- reference: Rahman, A., Hasan, R. M., Agarwala, R., Martin, C., Day, A. G., & Heyland, D. K. (2016). Identifying critically-ill patients who will benefit most from nutritional therapy: Further validation of the “modified NUTRIC‿nutritional risk assessment tool. Clinical Nutrition, 35(1), 158�?. 
+	-- reference: Rahman A, Hasan RM, Agarwala R, Martin C, Day AG, Heyland DK. 
+	-- Identifying critically-ill patients who will benefit most from nutritional therapy: 
+	-- Further validation of the “modified NUTRIC” nutritional risk assessment tool. 
+	-- Clinical Nutrition. 2016;35(1):158-162. doi:10.1016/j.clnu.2015.01.015
 	--
 	-- comorbidities were referenced to the Charlson Comorbidity Index (CCI)
 	-- https://github.com/MIT-LCP/mimic-code/blob/main/mimic-iv/concepts_postgres/comorbidity/charlson.sql
@@ -537,7 +540,20 @@ CREATE MATERIALIZED VIEW PUBLIC.mnutric AS
 					WHEN sofa.sofa_24h >= 10
 						THEN 2
 					END AS sofa_score
-				,GREATEST(com.myocardial_infarct, com.congestive_heart_failure, com.peripheral_vascular_disease, com.cerebrovascular_disease, com.dementia, com.chronic_pulmonary_disease, com.rheumatic_disease, com.liver_disease, com.diabetes, com.paraplegia, com.renal_disease, com.malignant_cancer, com.aids) AS comor_score
+				,GREATEST(
+				com.myocardial_infarct, 
+				com.congestive_heart_failure, 
+				com.peripheral_vascular_disease, 
+				com.cerebrovascular_disease, 
+				com.dementia, 
+				com.chronic_pulmonary_disease, 
+				com.rheumatic_disease, 
+				com.liver_disease, 
+				com.diabetes, 
+				com.paraplegia, 
+				com.renal_disease, 
+				com.malignant_cancer, 
+				com.aids) AS comor_score
 				,CASE 
 					WHEN (datetime_diff(de.icu_intime, de.admittime, 'HOUR') / 24) < 1
 						THEN 0
@@ -552,5 +568,10 @@ CREATE MATERIALIZED VIEW PUBLIC.mnutric AS
 			)
 
 SELECT s.*
-	,COALESCE(age_score, 0) + COALESCE(apacheii_score, 0) + COALESCE(sofa_score, 0) + COALESCE(comor_score, 0) + COALESCE(time_score, 0) AS mnutric
+	,COALESCE(age_score, 0) 
+	+ COALESCE(apacheii_score, 0) 
+	+ COALESCE(sofa_score, 0) 
+	+ COALESCE(comor_score, 0) 
+	+ COALESCE(time_score, 0) 
+	AS mnutric
 FROM scorecomp s
