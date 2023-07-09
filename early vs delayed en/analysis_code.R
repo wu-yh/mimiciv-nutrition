@@ -454,7 +454,7 @@ varNames <-
   )]
 varNames <-
   varNames[order(dataPlot$Unmatched[dataPlot$variable %in% varNames])]
-dataPlotMelt <- dataPlotMelt[dataPlotMelt$variable %in% varNames, ]
+dataPlotMelt <- dataPlotMelt[dataPlotMelt$variable %in% varNames,]
 dataPlotMelt$variable <-
   factor(dataPlotMelt$variable, levels = varNames)
 smdplot <- ggplot(
@@ -1778,6 +1778,7 @@ day3 <- long_cal_tot.data %>%
   summarise(mean_cal_tot = mean(cal_tot_amount) / adj_wt,
             # kcal/kg/d
             .groups = "drop")
+mean(day3$mean_cal_tot)
 day3 <- distinct(day3, stay_id, .keep_all = TRUE)
 long_cal_tot.data <-
   left_join(long_cal_tot.data, day3, by = "stay_id")
@@ -1839,6 +1840,7 @@ day3.1 <- long_pr_tot.data %>%
   summarise(mean_pr_tot = mean(pr_tot_amount) / adj_wt,
             # g/kg/d
             .groups = "drop")
+mean(day3.1$mean_pr_tot)
 day3.1 <- distinct(day3.1, stay_id, .keep_all = TRUE)
 long_pr_tot.data <-
   left_join(long_pr_tot.data, day3.1, by = "stay_id")
